@@ -66,7 +66,10 @@
         </span>
 
         <!-- All Square and Sudden Death Indicator -->
-        <template v-if="up === 0">
+        <template v-if="up === 0 && lastHole === 18">
+            <img id="square" src="../assets/sudden-death.png">
+        </template>
+        <template v-else-if="up === 0">
             <img id="square" src="../assets/square.png">
         </template>
         <template v-else>
@@ -103,40 +106,56 @@
 </template>
 
 <script>
+import fb from "../firebaseConfig"
 export default {
-  name: 'MatchPlay',
+  name: 'MatchScorecard',
   props: {
     matchID: String
   },
   data: function () {
       return {
-          p1Name: 'badatgaems',
-          p2Name: 'bode',
-          p1Char: 'VETERAN.gif',
-          p2Char: 'PUTTMASTER.gif',
-          up: -3,
-          lastHole: 15,
+          p1Name: '',
+          p2Name: '',
+          p1Char: 'e.png',
+          p2Char: 'e.png',
+          up: 0,
+          lastHole: 0,
           scores: [
-              {hole: 1, score: 1},
-              {hole: 2, score: 3},
-              {hole: 3, score: 3},
-              {hole: 4, score: 3},
-              {hole: 5, score: 3},
-              {hole: 6, score: 3},
-              {hole: 7, score: 3},
-              {hole: 8, score: 3},
-              {hole: 9, score: 3},
-              {hole: 10, score: 3},
-              {hole: 11, score: 3},
-              {hole: 12, score: 3},
-              {hole: 13, score: 3},
-              {hole: 14, score: 3},
-              {hole: 15, score: 3},
-              {hole: 16, score: 3},
-              {hole: 17, score: 3},
+              {hole: 1, score: 0},
+              {hole: 2, score: 0},
+              {hole: 3, score: 0},
+              {hole: 4, score: 0},
+              {hole: 5, score: 0},
+              {hole: 6, score: 0},
+              {hole: 7, score: 0},
+              {hole: 8, score: 0},
+              {hole: 9, score: 0},
+              {hole: 10, score: 0},
+              {hole: 11, score: 0},
+              {hole: 12, score: 0},
+              {hole: 13, score: 0},
+              {hole: 14, score: 0},
+              {hole: 15, score: 0},
+              {hole: 16, score: 0},
+              {hole: 17, score: 0},
               {hole: 18, score: 0},
             ] 
-      }
+      };
+  },
+  mounted() {
+      const itemRef = fb.database().ref(`matches/${this.matchID}`);
+      console.log(itemRef)
+      itemRef.on("value", snapshot => {
+          let data = snapshot.val();
+          console.log(data)
+          this.p1Name = data['p1Name'];
+          this.p2Name = data['p2Name'];
+          this.p1Char = data['p1Char'];
+          this.p2Char = data['p2Char'];
+          this.up = data['up'];
+          this.lastHole = data['lastHole'];
+          this.scores = data['scores'];
+      });
   }
 }
 </script>
