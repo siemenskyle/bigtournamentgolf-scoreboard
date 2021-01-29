@@ -19,6 +19,8 @@ const firebaseConfig = {
 var fb = firebase.initializeApp(firebaseConfig); 
 export default fb;
 ```
+(I should probably make a mock for this or something huh)
+
 
 Then
 ```
@@ -39,6 +41,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
