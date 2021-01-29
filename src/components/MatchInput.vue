@@ -6,10 +6,16 @@
       <option value="VETERAN.gif">VETERAN</option>
       <option value="SHOTMAKER.gif">SHOTMAKER</option>
     </select>
+    <v-select></v-select>
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
+import vSelect from 'vue-select'
+
+Vue.component('v-select', vSelect);
+
 export default {
   name: 'MatchInput',
   data: function () {

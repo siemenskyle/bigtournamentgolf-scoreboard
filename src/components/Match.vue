@@ -1,8 +1,12 @@
 <template>
-  <MatchInput/>
-  <div class="scorecard">
-    <MatchScorecard matchID="BigTournamentGolf"/> 
+  <div class="back">
   </div>
+  <MatchInput/>
+  <span class="cardwrap">
+    <div class="scorecard">
+      <MatchScorecard matchID="BigTournamentGolf"/> 
+    </div>
+  </span>
 </template>
 
 <script>
@@ -18,14 +22,32 @@ export default {
 }
 </script>
 
-<style scoped>
-.scorecard {
-  width: 575px;
-  height: 600px;
+<style>
+.back {
   position: absolute;
+  height: 100%;
+  width: 100%;
+  left:0;
+  right: 0;
+  top: 0;
+  background-color: #222222;
+  z-index: -10;
+}
+.cardwrap{
+  transform: scale(1);
+  width: 575px;
+  height: 420px;
+  position: absolute;
+  left: 0;
+  right: 0;
   margin-right: auto;
   margin-left: auto;
-  right: 0;
-  left: 0;
+  border: 5px solid black;
+  border-radius: 3px;
+}
+.scorecard {
+  width: 575px;
+  height: 420px;
+  background-color: #0b3811;
 }
 </style>
