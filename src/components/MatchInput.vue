@@ -4,7 +4,7 @@
       <div class="char p1char">
         <span>
           Player 1
-          <input class="name" v-model="match.p1Name" placeholder="Name">
+          <input class="name" v-model.lazy="match.p1Name" placeholder="Name">
         </span>
         <select class="charsel" v-model="match.p1Char">
           <option disabled value="e.png">Character</option>
@@ -19,7 +19,7 @@
       <div class="char p2char">
         <span>
           Player 2
-          <input class="name" v-model="match.p2Name" placeholder="Name">
+          <input class="name" v-model.lazy="match.p2Name" placeholder="Name">
         </span>
         <select class="charsel" v-model="match.p2Char">
           <option disabled value="e.png">Character</option>
@@ -38,15 +38,15 @@
       <div :class="`score h${i}score`">
       <span class="holelbl"> Hole {{ i }}</span>
       <span>
-      <input type="radio" :id="`h${i}p1w`" value="1" v-model="match.scores[i-1].score" v-on:click="holeclick(i, 1)" :disabled="holedisabled(i)">
+      <input type="radio" :id="`h${i}p1w`" value="1" v-model.number="match.scores[i-1].score" v-on:click="holeclick(i, 1)" :disabled="holedisabled(i)">
       <label :for="`h${i}p1w`">P1 Win</label>
       </span>
       <span>
-      <input type="radio" :id="`h${i}p2w`" value="2" v-model="match.scores[i-1].score" v-on:click="holeclick(i, 2)" :disabled="holedisabled(i)">
+      <input type="radio" :id="`h${i}p2w`" value="2" v-model.number="match.scores[i-1].score" v-on:click="holeclick(i, 2)" :disabled="holedisabled(i)">
       <label :for="`h${i}p2w`">P2 Win</label>
       </span>
       <span>  
-      <input type="radio" :id="`h${i}draw`" value="3" v-model="match.scores[i-1].score" v-on:click="holeclick(i, 3)" :disabled="holedisabled(i)">
+      <input type="radio" :id="`h${i}draw`" value="3" v-model.number="match.scores[i-1].score" v-on:click="holeclick(i, 3)" :disabled="holedisabled(i)">
       <label :for="`h${i}draw`">Draw</label>
       </span>
       </div>
@@ -57,15 +57,15 @@
       <div :class="`score h${i+9}score`">
       <span class="holelbl"> Hole {{ i+9 }}</span>
       <span>
-      <input type="radio" :id="`h${i+9}p1w`" value="1" v-model="match.scores[i+8].score" v-on:click="holeclick(i+9, 1)" :disabled="holedisabled(i+9)">
+      <input type="radio" :id="`h${i+9}p1w`" value="1" v-model.number="match.scores[i+8].score" v-on:click="holeclick(i+9, 1)" :disabled="holedisabled(i+9)">
       <label :for="`h${i+9}p1w`">P1 Win</label>
       </span>
       <span>
-      <input type="radio" :id="`h${i+9}p2w`" value="2" v-model="match.scores[i+8].score" v-on:click="holeclick(i+9, 2)" :disabled="holedisabled(i+9)">
+      <input type="radio" :id="`h${i+9}p2w`" value="2" v-model.number="match.scores[i+8].score" v-on:click="holeclick(i+9, 2)" :disabled="holedisabled(i+9)">
       <label :for="`h${i+9}p2w`">P2 Win</label>
       </span>
       <span>  
-      <input type="radio" :id="`h${i+9}draw`" value="3" v-model="match.scores[i+8].score" v-on:click="holeclick(i+9, 3)" :disabled="holedisabled(i+9)">
+      <input type="radio" :id="`h${i+9}draw`" value="3" v-model.number="match.scores[i+8].score" v-on:click="holeclick(i+9, 3)" :disabled="holedisabled(i+9)">
       <label :for="`h${i+9}draw`">Draw</label>
       </span>
       </div>
@@ -116,6 +116,7 @@ export default {
       if ( score == clicked && (hole === 18 || this.match.scores[hole].score == 0) ) {
         this.match.scores[hole-1].score = 0;
       }
+      
     },
     holedisabled: function(hole) {
       if (hole == 1 || this.match.scores[hole-2].score !== 0) {
@@ -123,6 +124,31 @@ export default {
       } 
       return true;
     }
+  },
+  created() {
+    this.$watch( () => this.match.scores, () => {
+        let up = 0;
+        let lastHole = 0;
+        this.match.scores.forEach( hole => {
+          switch (hole.score) {
+            case '1':
+              up += 1;
+              lastHole = hole.hole;
+              break;
+            case '2':
+              up -= 1;
+              lastHole = hole.hole;
+              break;
+            case '3':
+              lastHole = hole.hole;
+              break;
+          }
+        });
+        this.match.up = up;
+        this.match.lastHole = lastHole;
+      }, 
+      {deep: true}
+    );
   }
 }
 </script>
