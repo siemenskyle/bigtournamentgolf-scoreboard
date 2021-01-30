@@ -1,6 +1,6 @@
 <template>
   <div class="scorecard">
-    <MatchScorecard :matchID="match"/> 
+    <MatchScorecard :matchID="matchID"/> 
   </div>
 </template>
 

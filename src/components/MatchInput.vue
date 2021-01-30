@@ -209,7 +209,6 @@ export default {
     // Update local storage and fetch from DB with matchID as it changes
     this.$watch( 'matchID', () => {
       matchref.off();
-      localStorage.setItem('matchID', this.matchID);
       matchref = fb.database().ref(`matches/${this.matchID}`);
       matchref.on('value', (snapshot) => {
         let data = snapshot.val();

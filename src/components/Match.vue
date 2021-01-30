@@ -85,6 +85,7 @@ export default {
     },
     changeID: function() {
       this.matchID = this.inputMatchID;
+      localStorage.setItem('matchID', this.matchID);
     }
   },
   created() {
@@ -94,6 +95,7 @@ export default {
       this.matchID = getID;
     } else {
       this.matchID = this.randomID();
+      localStorage.setItem('matchID', this.matchID);
     }
     this.inputMatchID = this.matchID;
   }
