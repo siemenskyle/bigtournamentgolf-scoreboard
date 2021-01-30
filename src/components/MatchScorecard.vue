@@ -66,6 +66,7 @@
 
 <script>
 import fb from "../firebaseConfig"
+var watchedRef;
 export default {
   name: 'MatchScorecard',
   props: {
@@ -170,17 +171,37 @@ export default {
           img.src = src;
       });
       // Get Match & Watch DB
-      const itemRef = fb.database().ref(`matches/${this.matchID}`);
-      itemRef.on("value", snapshot => {
+      watchedRef = fb.database().ref(`matches/${this.matchID}`);
+      watchedRef.on("value", snapshot => {
           let data = snapshot.val();
-          this.p1Name = data['p1Name'];
-          this.p2Name = data['p2Name'];
-          this.p1Char = data['p1Char'];
-          this.p2Char = data['p2Char'];
-          this.up = data['up'];
-          this.lastHole = data['lastHole'];
-          this.scores = data['scores'];
+          if (data) {
+            this.p1Name = data['p1Name'];
+            this.p2Name = data['p2Name'];
+            this.p1Char = data['p1Char'];
+            this.p2Char = data['p2Char'];
+            this.up = data['up'];
+            this.lastHole = data['lastHole'];
+            this.scores = data['scores'];
+          }
       });
+  },
+  created() {
+    this.$watch( 'matchID', () => {
+      watchedRef.off();
+      watchedRef = fb.database().ref(`matches/${this.matchID}`);
+      watchedRef.on("value", snapshot => {
+          let data = snapshot.val();
+          if (data) {
+            this.p1Name = data['p1Name'];
+            this.p2Name = data['p2Name'];
+            this.p1Char = data['p1Char'];
+            this.p2Char = data['p2Char'];
+            this.up = data['up'];
+            this.lastHole = data['lastHole'];
+            this.scores = data['scores'];
+          }
+      });
+    });
   }
 }
 </script>

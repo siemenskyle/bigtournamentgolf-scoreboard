@@ -78,6 +78,7 @@
 <script>
 import fb from "../firebaseConfig"
 
+var matchref;
 export default {
   name: 'MatchInput',
   props: {
@@ -207,8 +208,10 @@ export default {
     );
     // Update local storage and fetch from DB with matchID as it changes
     this.$watch( 'matchID', () => {
+      matchref.off();
       localStorage.setItem('matchID', this.matchID);
-      fb.database().ref(`matches/${this.matchID}`).once('value').then((snapshot) => {
+      matchref = fb.database().ref(`matches/${this.matchID}`);
+      matchref.on('value', (snapshot) => {
         let data = snapshot.val();
         if (data) {
           this.match.p1Name = data['p1Name'];
@@ -218,11 +221,14 @@ export default {
           this.match.up = data['up'];
           this.match.lastHole = data['lastHole'];
           this.match.scores = data['scores'];
+        } else {
+          this.resetScoreboard();
         }
       }); 
     });
 
-    fb.database().ref(`matches/${this.matchID}`).once('value').then((snapshot) => {
+    matchref = fb.database().ref(`matches/${this.matchID}`);
+    matchref.on('value', (snapshot) => {
         let data = snapshot.val();
         if (data) {
           this.match.p1Name = data['p1Name'];
@@ -318,7 +324,7 @@ option {
   margin-bottom: 30px;
 }
 button {
-  margin-top: 20px;
+  margin-top: 40px;
   background-color: #333; 
   color: #fff;
   width: 200px;
