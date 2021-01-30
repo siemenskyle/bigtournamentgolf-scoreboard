@@ -71,17 +71,22 @@
       </div>
     </template>
     </div>
+    <button id="resetbutton" @mousedown="mousedown" @mouseup="mouseup" class="reset">Hold to Reset</button>
   </div>
 </template>
 
 <script>
+import fb from "../firebaseConfig"
+
 export default {
   name: 'MatchInput',
+  props: {
+    matchID: String
+  },
   data: function () {
       return {
-        matchId: "BigTournamentGolf",
         match: {
-          p1Name: 'bigthecat',
+          p1Name: '',
           p2Name: '',
           p1Char: 'e.png',
           p2Char: 'e.png',
@@ -116,30 +121,73 @@ export default {
       if ( score == clicked && (hole === 18 || this.match.scores[hole].score == 0) ) {
         this.match.scores[hole-1].score = 0;
       }
-      
     },
     holedisabled: function(hole) {
       if (hole == 1 || this.match.scores[hole-2].score !== 0) {
         return false;
       } 
       return true;
+    },
+    mousedown: function() {
+      this.resetPressed = true;
+      document.getElementById('resetbutton').classList.add("active");
+      let reset = this.resetScoreboard
+      setTimeout(function() {
+        if (document.getElementById('resetbutton').classList.contains("active")) {
+          reset();
+        }
+      }, 800);
+    },
+    mouseup: function() {
+      document.getElementById('resetbutton').classList.remove("active");
+    },
+    resetScoreboard: function() {
+      this.match = {
+        p1Name: '',
+        p2Name: '',
+        p1Char: 'e.png',
+        p2Char: 'e.png',
+        up: 0,
+        lastHole: 0,
+        scores: [
+          {hole: 1, score: 0},
+          {hole: 2, score: 0},
+          {hole: 3, score: 0},
+          {hole: 4, score: 0},
+          {hole: 5, score: 0},
+          {hole: 6, score: 0},
+          {hole: 7, score: 0},
+          {hole: 8, score: 0},
+          {hole: 9, score: 0},
+          {hole: 10, score: 0},
+          {hole: 11, score: 0},
+          {hole: 12, score: 0},
+          {hole: 13, score: 0},
+          {hole: 14, score: 0},
+          {hole: 15, score: 0},
+          {hole: 16, score: 0},
+          {hole: 17, score: 0},
+          {hole: 18, score: 0},
+        ]
+      }
     }
   },
   created() {
+    // Watch for score changes and update up and lastHole
     this.$watch( () => this.match.scores, () => {
         let up = 0;
         let lastHole = 0;
         this.match.scores.forEach( hole => {
-          switch (hole.score) {
-            case '1':
+          switch (parseInt(hole.score)) {
+            case 1:
               up += 1;
               lastHole = hole.hole;
               break;
-            case '2':
+            case 2:
               up -= 1;
               lastHole = hole.hole;
               break;
-            case '3':
+            case 3:
               lastHole = hole.hole;
               break;
           }
@@ -149,6 +197,43 @@ export default {
       }, 
       {deep: true}
     );
+    // Update match in the DB as it changes
+    this.$watch( 'match', () => {
+        let sendMatch = JSON.parse(JSON.stringify(this.match));
+        sendMatch.scores.forEach( hole => {hole.score = parseInt(hole.score); } );
+        fb.database().ref(`matches/${this.matchID}`).set(sendMatch);
+      },
+      {deep: true}
+    );
+    // Update local storage and fetch from DB with matchID as it changes
+    this.$watch( 'matchID', () => {
+      localStorage.setItem('matchID', this.matchID);
+      fb.database().ref(`matches/${this.matchID}`).once('value').then((snapshot) => {
+        let data = snapshot.val();
+        if (data) {
+          this.match.p1Name = data['p1Name'];
+          this.match.p2Name = data['p2Name'];
+          this.match.p1Char = data['p1Char'];
+          this.match.p2Char = data['p2Char'];
+          this.match.up = data['up'];
+          this.match.lastHole = data['lastHole'];
+          this.match.scores = data['scores'];
+        }
+      }); 
+    });
+
+    fb.database().ref(`matches/${this.matchID}`).once('value').then((snapshot) => {
+        let data = snapshot.val();
+        if (data) {
+          this.match.p1Name = data['p1Name'];
+          this.match.p2Name = data['p2Name'];
+          this.match.p1Char = data['p1Char'];
+          this.match.p2Char = data['p2Char'];
+          this.match.up = data['up'];
+          this.match.lastHole = data['lastHole'];
+          this.match.scores = data['scores'];
+        }
+    }); 
   }
 }
 </script>
@@ -231,5 +316,24 @@ option {
   flex-direction: column;
   justify-content: center;
   margin-bottom: 30px;
+}
+button {
+  margin-top: 20px;
+  background-color: #333; 
+  color: #fff;
+  width: 200px;
+  height: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  border: solid 1px #444;
+}
+button:hover {
+  border: solid 1px #888;
+}
+button:active {
+  background-color: rgb(3, 88, 15);
+}
+button:focus {
+  outline: none;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
   <div class="back">
   </div>
-  <MatchInput/>
+  <MatchInput :matchID="matchID"/>
   <span class="cardwrap">
     <div class="scorecard">
-      <MatchScorecard matchID="BigTournamentGolf"/> 
+      <MatchScorecard :matchID="matchID"/> 
     </div>
   </span>
 </template>
@@ -18,6 +18,19 @@ export default {
   components: {
     MatchInput,
     MatchScorecard
+  },
+  data: function () {
+      return {
+        matchID: ''
+      }
+  },
+  created() {
+    const getID = localStorage.getItem('matchID');
+    if (getID) {
+      this.matchID = getID;
+    } else {
+      this.matchID = 'BigTournamentGolf';
+    }
   }
 }
 </script>
@@ -49,5 +62,7 @@ export default {
   width: 575px;
   height: 420px;
   background-color: #0b3811;
+  z-index: -10;
+  position: relative;
 }
 </style>
