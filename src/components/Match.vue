@@ -25,6 +25,11 @@
   </span>
   <p> Reccomended size: 575 width, 420 height </p>
   </span>
+    <div class="footer">
+    <a href="https://twitter.com/badatgaems" target="_blank">Created by @badatgaems</a>
+    <a href="https://discord.gg/X4NZPxJ" target="_blank">Join us on Discord for bi-weekly Neo Turf Tournaments!</a>
+    <a href="https://github.com/siemenskyle/bigtournamentgolf-scoreboard" target="_blank">Source</a>
+  </div>
   </div>
 </template>
 
@@ -189,5 +194,15 @@ p {
   font-size: 85%;
   margin-top: 5px;
   margin-left: 135px;
+}
+.footer {
+  display: flex;
+  flex-direction: column;
+}
+a {
+  font-size: 70%;
+  margin-top: 4px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
