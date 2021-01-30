@@ -1,6 +1,4 @@
 <template>
-  <div class="back">
-  </div>
   <div class="container">
   <MatchInput :matchID="matchID"/>
   <span class="cardwrap">
@@ -90,6 +88,7 @@ export default {
     }
   },
   created() {
+    document.body.style.backgroundColor = '#222222';
     const getID = localStorage.getItem('matchID');
     if (getID) {
       this.matchID = getID;
@@ -101,17 +100,8 @@ export default {
 }
 </script>
 
+
 <style scoped>
-.back {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  left:0;
-  right: 0;
-  top: 0;
-  background-color: #222222;
-  z-index: -10;
-}
 .cardwrap{
   user-select: none;
   transform: scale(1);
