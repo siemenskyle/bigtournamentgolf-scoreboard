@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import { createWebHistory, createRouter } from "vue-router";
 import App from './App.vue'
-import Match from './components/matchPlay/Match.vue'
-import MatchView from './components/matchPlay/MatchView.vue'
-import StrokeScorecard from './components/strokePlay/StrokeScorecard.vue'
+import Match from './components/matchPlay/Match'
+import MatchView from './components/matchPlay/MatchView'
+import StrokeScorecard from './components/strokePlay/StrokeScorecard'
 
 const routes = [
   {

@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import MatchInput from './MatchInput.vue'
-import MatchScorecard from './MatchScorecard.vue'
+import MatchScorecard from './MatchScorecard'
+import MatchInput from './MatchInput'
 
 const randomWords = require('random-words');
 const alphanumeric = /^[0-9a-zA-Z]+$/;

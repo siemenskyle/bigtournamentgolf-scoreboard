@@ -6,7 +6,7 @@
 
 <script>
 
-import MatchScorecard from './MatchScorecard.vue'
+import MatchScorecard from './MatchScorecard'
 
 export default {
   name: 'MatchView',
