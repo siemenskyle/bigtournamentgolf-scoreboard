@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import fb from "../firebaseConfig"
+import fb from "../../firebaseConfig"
 
 var matchref;
 export default {

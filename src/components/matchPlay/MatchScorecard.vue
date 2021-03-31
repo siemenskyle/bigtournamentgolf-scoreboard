@@ -4,7 +4,7 @@
         
         <!-- Player Cards and Up Indicators -->
         <span id="p1Wrapper" class="wrappers">
-            <img id="p1Portrait" :src="require(`../assets/${p1Char}`)" class="portrait" />
+            <img id="p1Portrait" :src="require(`../../assets/${p1Char}`)" class="portrait" />
             <span id="p1Name" class="names" v-bind:style="{ fontSize: nameSize(p1Name) }">{{ p1Name }}</span>
 
             <template v-for="u in ups(1)" :key="u.up">
@@ -15,7 +15,7 @@
         </span>
 
         <span id="p2Wrapper" class="wrappers">
-            <img id="p2Portrait" :src="require(`../assets/${p2Char}`)" class="portrait" />
+            <img id="p2Portrait" :src="require(`../../assets/${p2Char}`)" class="portrait" />
             <span id="p2Name" class="names" v-bind:style="{ fontSize: nameSize(p2Name) }">{{ p2Name }}</span>
 
             <template v-for="u in ups(2)" :key="u.up">
@@ -27,35 +27,35 @@
 
         <!-- All Square and Sudden Death Indicator -->
         <template v-if="up === 0 && lastHole === 18">
-            <img id="square" src="../assets/sudden-death.png">
+            <img id="square" src="../../assets/sudden-death.png">
         </template>
         <template v-else-if="up === 0">
-            <img id="square" src="../assets/square.png">
+            <img id="square" src="../../assets/square.png">
         </template>
         <template v-else>
-            <img id="square" src="../assets/e.png">
+            <img id="square" src="../../assets/e.png">
         </template>
 
         <!-- Scorecard -->
         <div id="scorecardWrapper" >
             <div id="scorecard" class="scorecard" >
-                <img id="scorecardBack" src="../assets/matchplay.png" />
+                <img id="scorecardBack" src="../../assets/matchplay.png" />
                 <template v-for="score in scores" :key="score.hole">
                     <template v-if="score.score === 0" >
-                      <img class="score" v-bind:id="`h${score.hole}p1`"  src="../assets/e.png" />
-                      <img class="score" v-bind:id="`h${score.hole}p2`"  src="../assets/e.png" />
+                      <img class="score" v-bind:id="`h${score.hole}p1`"  src="../../assets/e.png" />
+                      <img class="score" v-bind:id="`h${score.hole}p2`"  src="../../assets/e.png" />
                     </template>
                     <template v-else-if="score.score === 1" >
-                      <img class="score" v-bind:id="`h${score.hole}p1`"  src="../assets/W.png" />
-                      <img class="score" v-bind:id="`h${score.hole}p2`"  src="../assets/L.png" />
+                      <img class="score" v-bind:id="`h${score.hole}p1`"  src="../../assets/W.png" />
+                      <img class="score" v-bind:id="`h${score.hole}p2`"  src="../../assets/L.png" />
                     </template>
                     <template v-else-if="score.score === 2" >
-                      <img class="score" v-bind:id="`h${score.hole}p1`"  src="../assets/L.png" />
-                      <img class="score" v-bind:id="`h${score.hole}p2`"  src="../assets/W.png" />
+                      <img class="score" v-bind:id="`h${score.hole}p1`"  src="../../assets/L.png" />
+                      <img class="score" v-bind:id="`h${score.hole}p2`"  src="../../assets/W.png" />
                     </template>
                     <template v-else-if="score.score === 3" >
-                      <img class="score" v-bind:id="`h${score.hole}p1`"  src="../assets/T.png" />
-                      <img class="score" v-bind:id="`h${score.hole}p2`"  src="../assets/T.png" />
+                      <img class="score" v-bind:id="`h${score.hole}p1`"  src="../../assets/T.png" />
+                      <img class="score" v-bind:id="`h${score.hole}p2`"  src="../../assets/T.png" />
                     </template>
                 </template>
             </div>
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import fb from "../firebaseConfig"
+import fb from "../../firebaseConfig"
 var watchedRef;
 export default {
   name: 'MatchScorecard',
@@ -115,11 +115,11 @@ export default {
       ups: function(player) {
           const up = this.up;
           const lastHole = this.lastHole;
-          const empty = require("../assets/e.png");
-          const upImg = require("../assets/UP.png");
-          const updormie = require("../assets/updormie.png");
-          const dormie = require("../assets/dormie.png");
-          const winner = require("../assets/winner.png");
+          const empty = require("../../assets/e.png");
+          const upImg = require("../../assets/UP.png");
+          const updormie = require("../../assets/updormie.png");
+          const dormie = require("../../assets/dormie.png");
+          const winner = require("../../assets/winner.png");
           let imgs = {
               'up': empty,
               'upNum': empty,
@@ -135,7 +135,7 @@ export default {
                       imgs['dormie'] = winner;
                   } else {
                       imgs['up'] = upImg;
-                      imgs['upNum'] = require(`../assets/${up}.png`);
+                      imgs['upNum'] = require(`../../assets/${up}.png`);
                   }
               } 
           } else {
@@ -149,7 +149,7 @@ export default {
                       imgs['dormie'] = winner;
                   } else {
                       imgs['up'] = upImg;
-                      imgs['upNum'] = require(`../assets/${p2up}.png`);
+                      imgs['upNum'] = require(`../../assets/${p2up}.png`);
                   }
               } 
           }
@@ -158,11 +158,11 @@ export default {
   },
   mounted() {
       // Preload images
-      const imgs = [require("../assets/e.png"), require("../assets/UP.png"), require("../assets/updormie.png"), require("../assets/dormie.png"), require("../assets/winner.png"),
-                    require("../assets/1.png"),require("../assets/2.png"),require("../assets/3.png"),require("../assets/4.png"),require("../assets/5.png"),require("../assets/6.png"),
-                    require("../assets/7.png"),require("../assets/8.png"),require("../assets/9.png"),require("../assets/T.png"),require("../assets/W.png"),require("../assets/L.png"),
-                    require("../assets/PUTTMASTER.gif"),require("../assets/SHOTMAKER.gif"),require("../assets/TECHNITIAN.gif"),require("../assets/POWERGOLFER.gif"),require("../assets/VETERAN.gif"),
-                    require("../assets/YOUNGHERO.gif")];
+      const imgs = [require("../../assets/e.png"), require("../../assets/UP.png"), require("../../assets/updormie.png"), require("../../assets/dormie.png"), require("../../assets/winner.png"),
+                    require("../../assets/1.png"),require("../../assets/2.png"),require("../../assets/3.png"),require("../../assets/4.png"),require("../../assets/5.png"),require("../../assets/6.png"),
+                    require("../../assets/7.png"),require("../../assets/8.png"),require("../../assets/9.png"),require("../../assets/T.png"),require("../../assets/W.png"),require("../../assets/L.png"),
+                    require("../../assets/PUTTMASTER.gif"),require("../../assets/SHOTMAKER.gif"),require("../../assets/TECHNITIAN.gif"),require("../../assets/POWERGOLFER.gif"),require("../../assets/VETERAN.gif"),
+                    require("../../assets/YOUNGHERO.gif")];
       imgs.forEach( src => {
           let img = new Image();
           img.onload = () => {
@@ -209,7 +209,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @font-face {
-    src: url('../assets/EndlessBossBattleRegular-v7Ey.ttf');
+    src: url('../../assets/EndlessBossBattleRegular-v7Ey.ttf');
     font-family: "EndlessBossBattle";
 }
 
@@ -234,7 +234,7 @@ export default {
     line-height: 45px;
     text-align: center;
     font-size: 28px;
-    background: url(../assets/namebar.png);
+    background: url(../../assets/namebar.png);
     filter: drop-shadow(-1px 1px 1px gray);
 }    
 
