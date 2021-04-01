@@ -2,46 +2,36 @@
     <div id="scoreboard">
 		<div id="scorecardWrapper" >
 			<div id="scorecard" class="scorecard" :class="course">
-				<div id="solo" >
-                    <span class="front9">
-					<div class="score" id="h1" >1</div>
-					<div class="score" id="h2" >2</div>
-					<div class="score" id="h3" >3</div>
-					<div class="score" id="h4" >4</div>
-					<div class="score" id="h5" >5</div>
-					<div class="score" id="h6" >6</div>
-					<div class="score" id="h7" >7</div>
-					<div class="score" id="h8" >8</div>
-					<div class="score" id="h9" >9</div>
-					<div class="score" id="frontNine" >42</div>
-                    </span>
-                    <span class="back9">
-					<div class="score" id="h10" >9</div>
-					<div class="score" id="h11" >8</div>
-					<div class="score" id="h12" >7</div>
-					<div class="score" id="h13" >6</div>
-					<div class="score" id="h14" >5</div>
-					<div class="score" id="h15" >4</div>
-					<div class="score" id="h16" >3</div>
-					<div class="score" id="h17" >2</div>
-					<div class="score" id="h18" >1</div>
-					<div class="score" id="backNine" >66</div>
-                    </span>
-				</div>
+                <span class="front9">       
+                <template v-for="i in 9" :key="i">
+				<div class="score" :class="scoreclass(i,scores[i-1].score,course)">{{showscore(scores[i-1].score)}}</div>
+                </template>
+				<div class="score" id="frontNine">{{inout(0,9,scores)}}</div>
+                </span>
+                <span class="back9">
+                        
+                <template v-for="i in 9" :key="i">
+				<div class="score" :class="scoreclass(i+9,scores[i+8].score,course)">{{showscore(scores[i+8].score)}}</div>
+                </template>
+				<div class="score" id="backNine" >{{inout(0,18,scores)}}</div>
+                </span>
 			</div>
 			
-			<span id="currentScoreWrap" class="wrappers">
-				<span class="stats">Score: <span id="currentScore">EVEN</span></span>
+            <span class="foot">
+			<span v-if="displayScore" id="currentScoreWrap" class="wrappers">
+				<span class="stats">Score: <span id="currentScore">{{calcscore(scores,course)}}</span></span>
 			</span>
-			<span id="paceWrap" class="wrappers">
-				<span class="stats">Pace: <span id="pace">-18</span></span>
+			<span v-if="displayPace" id="paceWrap" class="wrappers">
+				<span class="stats">Pace: <span id="pace">{{calcpace(scores,course)}}</span></span>
 			</span>
+            </span>
 		</div>
 	</div>
-	<div id="scores" class="hide"></div>
 </template>
 
 <script>
+import pars from './pars'
+
 export default {
   name: 'StrokeScorecard',
   props: {
@@ -49,11 +39,10 @@ export default {
   },
   data: function () {
       return {
-          course: "GERMANY",
-          name: "Bode",
-          lastHole: 0,
-          score: 0,
-          pace: -18,
+          course: "USA",
+          name: "Badatgaems",
+          displayScore: true,
+          displayPace: true,
           scores: [
               {hole: 1, score: 0},
               {hole: 2, score: 0},
@@ -75,7 +64,64 @@ export default {
               {hole: 18, score: 0},
             ] 
       };
-  }
+  },
+  methods: {
+    scoreclass: function(hole, score, course) {
+      var par = pars[course][hole-1];
+      if (score === par - 1) {
+          return "good";
+      } else if (score < par){
+          return "great";
+      } else if (score === par + 1){
+          return "poor";
+      } else if (score > par) {
+          return "bad";
+      }
+    },
+    showscore: function(score) {
+      if (score != 0) {
+          return score;
+      }
+      return "";
+    },
+    inout: function(start, end, scores) {
+        var total = 0;
+        for (var i = start; i < end; i++) {
+            var s = scores[i].score;
+            if (s == 0) {
+                return "";
+            }
+            total += s;
+        }
+        return total;
+    },
+    calcscore: function(scores,course) {
+        var score = 0;
+        scores.forEach(hole => {
+            if (hole.score != 0) {
+                score += hole.score - pars[course][hole.hole-1];
+            }
+        });
+        if (score == 0) {
+            return "EVEN";
+        }
+        return score;
+    },
+    calcpace: function(scores,course) {
+        var score = 0;
+        scores.forEach(hole => {
+            if (hole.score != 0) {
+                score += hole.score - pars[course][hole.hole-1];
+            } else {
+                score += -1;
+            }
+        });
+        if (score == 0) {
+            return "EVEN";
+        }
+        return score;
+    },
+  },
 }
 </script>
 
@@ -100,23 +146,15 @@ export default {
 }
 
 .wrappers {
-    position: absolute;
     margin-top: 10px;
     width: 275px;
     height: 42px;
-    line-height: 45px;
+    line-height: 48px;
     text-align: center;
     font-size: 28px;
     background: url(../../assets/namebar.png);
     filter: drop-shadow(-1px 1px 1px gray);
     -webkit-text-stroke: 1px black;
-}
-
-.stats {
-    position: inherit;
-    left: 0px;
-    width: 100%;
-    top: 2px;
 }
 
 #currentScoreWrap {
@@ -174,7 +212,7 @@ export default {
 .back9{
     display: flex;
     position: absolute;
-    top: 268px;
+    top: 378px;
     left: 95px;
 }
 
@@ -191,8 +229,8 @@ export default {
 .bad {
 	color:#5a96e7;
 }
-
-.hide {
-    display: none;
+.foot {
+    display: flex;
+    justify-content: center;
 }
 </style>
