@@ -3,7 +3,8 @@ import { createWebHistory, createRouter } from "vue-router";
 import App from './App.vue'
 import Match from './components/matchPlay/Match'
 import MatchView from './components/matchPlay/MatchView'
-import StrokeScorecard from './components/strokePlay/StrokeScorecard'
+import Stroke from './components/strokePlay/Stroke'
+import StrokeView from './components/strokePlay/StrokeView'
 
 const routes = [
   {
@@ -19,13 +20,19 @@ const routes = [
   {
     path: "/stroke",
     name: "StrokePlay",
-    component: StrokeScorecard
+    component: Stroke
   },
   {
     path: "/match/:matchID",
     name: "Match",
     props: true,
     component: MatchView
+  },
+  {
+    path: "/stroke/:strokeID",
+    name: "Stroke",
+    props: true,
+    component: StrokeView
   },
 ];
 

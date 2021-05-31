@@ -30,8 +30,9 @@
 </template>
 
 <script>
-import pars from './pars'
-
+import fb from "../../firebaseConfig";
+import pars from './pars';
+var watchedRef;
 export default {
   name: 'StrokeScorecard',
   props: {
@@ -40,7 +41,6 @@ export default {
   data: function () {
       return {
           course: "USA",
-          name: "Badatgaems",
           displayScore: true,
           displayPace: true,
           scores: [
@@ -122,6 +122,34 @@ export default {
         return score;
     },
   },
+  mounted() {
+      // Get Match & Watch DB
+      watchedRef = fb.database().ref(`strokes/${this.strokeID}`);
+      watchedRef.on("value", snapshot => {
+          let data = snapshot.val();
+          if (data) {
+            this.course = data['course'];
+            this.displayScore = data['displayScore'];
+            this.displayPace = data['displayPace'];
+            this.scores = data['scores'];
+          }
+      });
+  },
+  created() {
+    this.$watch( 'strokeID', () => {
+      watchedRef.off();
+      watchedRef = fb.database().ref(`matches/${this.strokeID}`);
+      watchedRef.on("value", snapshot => {
+          let data = snapshot.val();
+          if (data) {
+            this.course = data['course'];
+            this.displayScore = data['displayScore'];
+            this.displayPace = data['displayPace'];
+            this.scores = data['scores'];
+          }
+      });
+    });
+  }
 }
 </script>
 

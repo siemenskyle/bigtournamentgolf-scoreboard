@@ -9,13 +9,16 @@
         <select class="charsel" v-model="match.p1Char">
           <option disabled value="e.png">Character</option>
           <option value="YOUNGHERO.gif">🇺🇸 Young Hero</option>
-          <option value="TECHNITIAN.gif">🇬🇧 Technitian</option>
+          <option value="TECHNITIAN.gif">🇬🇧 Technician</option>
           <option value="VETERAN.gif">🇦🇺 Veteran</option>
           <option value="SHOTMAKER.gif">🇩🇪 Shot Maker</option>
           <option value="POWERGOLFER.gif">🇧🇷 Power Golfer</option>
           <option value="PUTTMASTER.gif">🇯🇵 Putt Master</option>
         </select>
       </div>
+
+      <button id="swap" class="swap"  @click="swapplayers()"> ← Swap → </button>
+
       <div class="char p2char">
         <span>
           Player 2
@@ -24,7 +27,7 @@
         <select class="charsel" v-model="match.p2Char">
           <option disabled value="e.png">Character</option>
           <option value="YOUNGHERO.gif">🇺🇸 Young Hero</option>
-          <option value="TECHNITIAN.gif">🇬🇧 Technitian</option>
+          <option value="TECHNITIAN.gif">🇬🇧 Technician</option>
           <option value="VETERAN.gif">🇦🇺 Veteran</option>
           <option value="SHOTMAKER.gif">🇩🇪 Shot Maker</option>
           <option value="POWERGOLFER.gif">🇧🇷 Power Golfer</option>
@@ -117,6 +120,15 @@ export default {
       };
   },
   methods: {
+    swapplayers: function() {
+      var tmp = this.match.p1Name;
+      this.match.p1Name = this.match.p2Name;
+      this.match.p2Name = tmp;
+
+      tmp = this.match.p1Char;
+      this.match.p1Char = this.match.p2Char;
+      this.match.p2Char = tmp;
+    },
     holeclick: function(hole, clicked) {
       const score = this.match.scores[hole-1].score;
       if ( score == clicked && (hole === 18 || this.match.scores[hole].score == 0) ) {
@@ -323,14 +335,20 @@ option {
   margin-bottom: 30px;
 }
 button {
-  margin-top: 40px;
   background-color: #333; 
   color: #fff;
-  width: 200px;
-  height: 30px;
+  border: solid 1px #444;
+}
+.reset {
   margin-left: auto;
   margin-right: auto;
-  border: solid 1px #444;
+  margin-top: 40px;
+  width: 200px;
+  height: 30px;
+}
+.swap {
+  height: 30px;
+  margin-top: 45px;
 }
 button:hover {
   border: solid 1px #888;

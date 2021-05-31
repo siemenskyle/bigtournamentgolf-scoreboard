@@ -177,7 +177,8 @@ button:focus {
   outline: none;
 }
 button:disabled {
-  opacity: 30%;
+  filter: blur(1px);
+  opacity: 70%;
 }
 button:hover:disabled {
   border: solid 1px #444;
