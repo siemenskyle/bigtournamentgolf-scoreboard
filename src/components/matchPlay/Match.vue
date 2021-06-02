@@ -112,8 +112,8 @@ export default {
 .cardwrap{
   user-select: none;
   transform: scale(1);
-  width: 575px;
-  height: 420px;
+  width: 585px;
+  height: 430px;
   margin-right: auto;
   margin-left: auto;
   border: 5px solid black;

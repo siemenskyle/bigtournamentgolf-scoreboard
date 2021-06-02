@@ -1,9 +1,12 @@
 <template>
     <div class=body>
       <div id="scoreboard">
-        
         <!-- Player Cards and Up Indicators -->
         <span id="p1Wrapper" class="wrappers">
+            <template v-if="p1Country != '' && p1Char != 'e.png'" >
+              <country-flag :country="p1Country" class="flag stretch" />
+              <country-flag :country="p1Country" class="flag" />
+            </template>
             <img id="p1Portrait" :src="require(`../../assets/${p1Char}`)" class="portrait" />
             <span id="p1Name" class="names" v-bind:style="{ fontSize: nameSize(p1Name) }">{{ p1Name }}</span>
 
@@ -15,6 +18,10 @@
         </span>
 
         <span id="p2Wrapper" class="wrappers">
+            <template v-if="p2Country != '' && p2Char != 'e.png'" >
+              <country-flag :country="p2Country" class="flag stretch" />
+              <country-flag :country="p2Country" class="flag" />
+            </template>
             <img id="p2Portrait" :src="require(`../../assets/${p2Char}`)" class="portrait" />
             <span id="p2Name" class="names" v-bind:style="{ fontSize: nameSize(p2Name) }">{{ p2Name }}</span>
 
@@ -66,9 +73,14 @@
 
 <script>
 import fb from "../../firebaseConfig";
+import CountryFlag from 'vue-country-flag-next';
+
 var watchedRef;
 export default {
   name: 'MatchScorecard',
+  components: {
+    CountryFlag,
+  },
   props: {
     matchID: String
   },
@@ -78,6 +90,8 @@ export default {
           p2Name: '',
           p1Char: 'e.png',
           p2Char: 'e.png',
+          p1Country: '',
+          p2Country: '',
           up: 0,
           lastHole: 0,
           scores: [
@@ -179,9 +193,17 @@ export default {
             this.p2Name = data['p2Name'];
             this.p1Char = data['p1Char'];
             this.p2Char = data['p2Char'];
+            this.p1Country = data['p1Country'];
+            this.p2Country = data['p2Country'];
             this.up = data['up'];
             this.lastHole = data['lastHole'];
             this.scores = data['scores'];
+          }
+          if (!this.p1Char) {
+              this.p1Char = 'e.png';
+          }
+          if (!this.p2Char) {
+              this.p2Char = 'e.png';
           }
       });
   },
@@ -199,6 +221,12 @@ export default {
             this.up = data['up'];
             this.lastHole = data['lastHole'];
             this.scores = data['scores'];
+          }
+          if (!this.p1Char) {
+              this.p1Char = 'e.png';
+          }
+          if (!this.p2Char) {
+              this.p2Char = 'e.png';
           }
       });
     });
@@ -255,7 +283,7 @@ export default {
     overflow: hidden;
     margin-left: 50px;
     margin-top: 1px;
-    z-index: -2
+    z-index: 0;
 }
 
 .portrait {
@@ -264,6 +292,23 @@ export default {
     margin-left: 2px;
     filter: drop-shadow(2px 4px 6px black);
     z-index: 5;
+}
+
+.flag {
+    position: inherit;
+    top: 11px;
+    transform: scale(1);
+    opacity: 80%;
+    left: 34px;
+    border: 1px solid black;
+    border-right: 0;
+    border-left: 0;
+}
+
+.stretch {
+    transform: scale(3, 1);
+    clip: rect(0, 12px, 50px, 4px);
+    left: 64.8px;
 }
 
 #square {

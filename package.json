@@ -10,8 +10,12 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "firebase": "^8.2.4",
+    "primeicons": "^4.1.0",
+    "primevue": "^3.5.0",
     "random-words": "^1.1.1",
     "vue": "^3.0.0",
+    "vue-country-code-select": "^1.6.7",
+    "vue-country-flag-next": "^2.1.1",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {
