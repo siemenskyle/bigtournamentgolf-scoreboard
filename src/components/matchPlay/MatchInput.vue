@@ -4,32 +4,83 @@
       <div class="char p1char">
         <span>
           Player 1
-          <input class="name" v-model.lazy="match.p1Name" placeholder="Name">
+          <AutoComplete v-model="match.p1Name" :suggestions="filteredPlayers" @complete="searchname($event)" @item-select="nameselect($event, true)" inputClass="name" :dropdown="true">
+            <template #item="slotProps">
+              <div class="nameoption">
+                  <div>{{slotProps.item}}</div>
+                  <Button icon="pi pi-times" class="removeplayer p-button-rounded p-button-danger p-button-text" @click="removeplayer(slotProps.item)"/>
+              </div>
+            </template>
+          </AutoComplete>
         </span>
-        <select class="charsel" v-model="match.p1Char">
-          <option disabled value="e.png">Character</option>
-          <option value="YOUNGHERO.gif">🇺🇸 Young Hero</option>
-          <option value="TECHNITIAN.gif">🇬🇧 Technitian</option>
-          <option value="VETERAN.gif">🇦🇺 Veteran</option>
-          <option value="SHOTMAKER.gif">🇩🇪 Shot Maker</option>
-          <option value="POWERGOLFER.gif">🇧🇷 Power Golfer</option>
-          <option value="PUTTMASTER.gif">🇯🇵 Putt Master</option>
-        </select>
+        <span class="dropdowns">
+          <Dropdown v-model="match.p1Char" :options="chars" optionLabel="name" optionValue="value" placeholder="Character" :showClear="true" class="select charsel" scrollHeight="250px" @change="updateplayercache()">
+            <template #option="slotProps">
+              <div class="country-item">
+                <country-flag :country="slotProps.option.flag" class="flag" />
+                <div>{{slotProps.option.name}}</div>
+              </div>
+            </template>
+          </Dropdown>
+          <Dropdown v-model="match.p1Country" :options="countries" optionLabel="name" optionValue="code" :filter="true" placeholder="Flag" :showClear="true" class="select countrysel" @change="updateplayercache()">
+            <template #value="slotProps">
+              <div class="country-item country-item-value" v-if="slotProps.value">
+                <country-flag :country="slotProps.value"  class="flag" />
+              </div>
+              <span v-else>
+                {{slotProps.placeholder}}
+              </span>
+            </template>
+            <template #option="slotProps">
+              <div class="country-item">
+                <country-flag :country="slotProps.option.code" class="flag" />
+                <div>{{slotProps.option.name}}</div>
+              </div>
+            </template>
+          </Dropdown>
+        </span>
       </div>
+
+      <button id="swap" class="swap"  @click="swapplayers()"> ← Swap → </button>
+
       <div class="char p2char">
         <span>
           Player 2
-          <input class="name" v-model.lazy="match.p2Name" placeholder="Name">
+          <AutoComplete v-model="match.p2Name" :suggestions="filteredPlayers" @complete="searchname($event)" @item-select="nameselect($event, false)" inputClass="name" :dropdown="true">
+            <template #item="slotProps">
+              <div class="nameoption">
+                  <div>{{slotProps.item}}</div>
+                  <Button icon="pi pi-times" class="removeplayer p-button-rounded p-button-danger p-button-text" @click="removeplayer(slotProps.item)"/>
+              </div>
+            </template>
+          </AutoComplete>
         </span>
-        <select class="charsel" v-model="match.p2Char">
-          <option disabled value="e.png">Character</option>
-          <option value="YOUNGHERO.gif">🇺🇸 Young Hero</option>
-          <option value="TECHNITIAN.gif">🇬🇧 Technitian</option>
-          <option value="VETERAN.gif">🇦🇺 Veteran</option>
-          <option value="SHOTMAKER.gif">🇩🇪 Shot Maker</option>
-          <option value="POWERGOLFER.gif">🇧🇷 Power Golfer</option>
-          <option value="PUTTMASTER.gif">🇯🇵 Putt Master</option>
-        </select>
+        <span class="dropdowns">
+          <Dropdown v-model="match.p2Char" :options="chars" optionLabel="name" optionValue="value" placeholder="Character" :showClear="true" class="select charsel" scrollHeight="250px" @change="updateplayercache()">
+            <template #option="slotProps">
+              <div class="country-item">
+                <country-flag :country="slotProps.option.flag" class="flag" />
+                <div>{{slotProps.option.name}}</div>
+              </div>
+            </template>
+          </Dropdown>
+          <Dropdown v-model="match.p2Country" :options="countries" optionLabel="name" optionValue="code" :filter="true" placeholder="Flag" :showClear="true" class="select countrysel" @change="updateplayercache()">
+            <template #value="slotProps">
+              <div class="country-item country-item-value" v-if="slotProps.value">
+                <country-flag :country="slotProps.value"  class="flag" />
+              </div>
+              <span v-else>
+                {{slotProps.placeholder}}
+              </span>
+            </template>
+            <template #option="slotProps">
+              <div class="country-item">
+                <country-flag :country="slotProps.option.code" class="flag" />
+                <div>{{slotProps.option.name}}</div>
+              </div>
+            </template>
+          </Dropdown>
+        </span>
       </div>
     </div>
 
@@ -71,26 +122,54 @@
       </div>
     </template>
     </div>
+
     <button id="resetbutton" @mousedown="mousedown" @mouseup="mouseup" class="reset">Hold to Reset</button>
   </div>
 </template>
 
 <script>
-import fb from "../firebaseConfig"
+import fb from "../../firebaseConfig";
+import isoCountries from './countries';
+import chars from './chars';
+import Dropdown from 'primevue/dropdown/sfc';
+import AutoComplete from 'primevue/autocomplete/sfc';
+import Button from 'primevue/button/sfc';
+import CountryFlag from 'vue-country-flag-next';
+
+function getPlayerCache() {
+  var fetched = localStorage.getItem('playerCache');
+  if (!fetched) {
+    return {};
+  }
+  return JSON.parse(fetched);
+}
 
 var matchref;
 export default {
   name: 'MatchInput',
+  components: {
+    Dropdown,
+    CountryFlag,
+    AutoComplete,
+    Button,
+  },
   props: {
     matchID: String
   },
   data: function () {
       return {
+        playerCache: {'badatgaems': {char: 'VETERAN.gif', country: 'CA'}},
+        p1NameInput: '',
+        filteredPlayers: null,
+        countries: isoCountries,
+        chars: chars,
         match: {
           p1Name: '',
           p2Name: '',
-          p1Char: 'e.png',
-          p2Char: 'e.png',
+          p1Char: null,
+          p2Char: null,
+          p1Country: null,
+          p2Country: null,
           up: 0,
           lastHole: 0,
           scores: [
@@ -117,6 +196,54 @@ export default {
       };
   },
   methods: {
+    removeplayer: function(name) {
+      delete this.playerCache[name];
+    },
+    updateplayercache: function() {
+      if (this.match.p1Name) {
+          this.playerCache[this.match.p1Name.toLowerCase()] = {char: this.match.p1Char, country: this.match.p1Country};
+      }
+      if (this.match.p2Name) {
+          this.playerCache[this.match.p2Name.toLowerCase()] = {char: this.match.p2Char, country: this.match.p2Country};
+      }
+      localStorage.setItem('playerCache', JSON.stringify(this.playerCache));
+    },
+    searchname: function(event) {
+      console.log(this.playerCache)
+      this.filteredPlayers = Object.keys(this.playerCache).filter(s => s.startsWith(event.query.toLowerCase())).sort();
+    },
+    nameselect: function(event, p1) {
+      console.log(event.value);
+      var player = this.playerCache[event.value]
+      if (player) {
+        if (p1){
+          this.match.p1Char = player.char;
+          this.match.p1Country = player.country;
+        } else {
+          this.match.p2Char = player.char;
+          this.match.p2Country = player.country;
+        }
+      } else {
+        if (p1){
+          this.match.p1Name = ''
+        } else {
+          this.match.p2Name = ''
+        }
+      }
+    },
+    swapplayers: function() {
+      var tmp = this.match.p1Name;
+      this.match.p1Name = this.match.p2Name;
+      this.match.p2Name = tmp;
+
+      tmp = this.match.p1Char;
+      this.match.p1Char = this.match.p2Char;
+      this.match.p2Char = tmp;
+
+      tmp = this.match.p1Country;
+      this.match.p1Country = this.match.p2Country;
+      this.match.p2Country = tmp;
+    },
     holeclick: function(hole, clicked) {
       const score = this.match.scores[hole-1].score;
       if ( score == clicked && (hole === 18 || this.match.scores[hole].score == 0) ) {
@@ -146,8 +273,10 @@ export default {
       this.match = {
         p1Name: '',
         p2Name: '',
-        p1Char: 'e.png',
-        p2Char: 'e.png',
+        p1Char: null,
+        p2Char: null,
+        p1Country: null,
+        p2Country: null,
         up: 0,
         lastHole: 0,
         scores: [
@@ -174,6 +303,8 @@ export default {
     }
   },
   created() {
+    this.playerCache = getPlayerCache();
+    
     // Watch for score changes and update up and lastHole
     this.$watch( () => this.match.scores, () => {
         let up = 0;
@@ -217,6 +348,8 @@ export default {
           this.match.p2Name = data['p2Name'];
           this.match.p1Char = data['p1Char'];
           this.match.p2Char = data['p2Char'];
+          this.match.p1Country = data['p1Country'];
+          this.match.p2Country = data['p2Country'];
           this.match.up = data['up'];
           this.match.lastHole = data['lastHole'];
           this.match.scores = data['scores'];
@@ -234,6 +367,8 @@ export default {
           this.match.p2Name = data['p2Name'];
           this.match.p1Char = data['p1Char'];
           this.match.p2Char = data['p2Char'];
+          this.match.p1Country = data['p1Country'];
+          this.match.p2Country = data['p2Country'];
           this.match.up = data['up'];
           this.match.lastHole = data['lastHole'];
           this.match.scores = data['scores'];
@@ -277,31 +412,25 @@ input {
 option {
   background-color: #333; 
 }
-.name {
-  display: block;
-  width: 250px;
-  margin: 0 0 10px;
-  padding: 8px 12px 10px 12px;
-  border: 1px solid rgba(0,0,0,.5);
-  background: rgba(0,0,0,.25);
-}
 .char {
   display: flex;
   flex-direction: column;
   margin-left: 10px;
   margin-right: 10px;
-}
-.charsel{
-  margin: 0 0 8px;
-  padding: 8px 12px 10px 12px;
-  border: 1px solid rgba(0,0,0,.5);
-  background: rgba(0,0,0,.25);
-  color: #fff;
+  width: 305px;
 }
 .players {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+.nameoption {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.removeplayer {
+  height: 24px !important;
 }
 .holes {
   display: flex;
@@ -323,14 +452,20 @@ option {
   margin-bottom: 30px;
 }
 button {
-  margin-top: 40px;
   background-color: #333; 
   color: #fff;
-  width: 200px;
-  height: 30px;
+  border: solid 1px #444;
+}
+.reset {
   margin-left: auto;
   margin-right: auto;
-  border: solid 1px #444;
+  margin-top: 40px;
+  width: 200px;
+  height: 30px;
+}
+.swap {
+  height: 30px;
+  margin-top: 45px;
 }
 button:hover {
   border: solid 1px #888;
@@ -340,5 +475,51 @@ button:active {
 }
 button:focus {
   outline: none;
+}
+.country-item {
+  display: flex;
+  flex-direction: row;
+}
+.flag {
+  margin-right: 1px;
+}
+.countrysel {
+  width: 110px;
+  margin-left: 4px;
+}
+.dropdowns {
+  display: flex;
+  flex-direction: row;
+}
+.select {
+  height: 38px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(0,0,0,.5);
+  background: rgba(0,0,0,.25);
+  color: #fff;
+}
+.charsel {
+  width: 100%;
+}
+</style>
+
+<style>
+
+.p-dropdown-clear-icon {
+  right: 0.375em !important;
+}
+.p-dropdown-trigger {
+  display: none !important;
+}
+.p-autocomplete {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.name {
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 8px 12px 10px 12px;
+  border: 1px solid rgba(0,0,0,.5);
+  background: rgba(0,0,0,.25);
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
   <div class="container">
-  <MatchInput :matchID="matchID"/>
+  <StrokeInput :strokeID="strokeID"/>
   <span class="cardwrap">
     <div class="scorecard">
-      <MatchScorecard :matchID="matchID"/> 
+      <StrokeScorecard :strokeID="strokeID"/> 
     </div>
   </span>
-  <span class="matchid">
+  <span class="strokeid">
     <span>
-    Match ID:
-    <input v-model="inputMatchID">
+    Stroke ID:
+    <input v-model="inputStrokeID">
     </span>
     <span class="err">{{ errormsg() }}</span>
     <span class="buttons">
@@ -23,7 +23,7 @@
     URL For Overlay:
     <input class="overlayurl" :value="overlayURL()" disabled="true">
   </span>
-  <p> Reccomended size: 575 width, 420 height </p>
+  <p> Reccomended size: 575 width, 495 height </p>
   </span>
     <div class="footer">
     <a href="https://twitter.com/badatgaems" target="_blank">Created by @badatgaems</a>
@@ -34,21 +34,21 @@
 </template>
 
 <script>
-import MatchInput from './MatchInput.vue'
-import MatchScorecard from './MatchScorecard.vue'
+import StrokeScorecard from './StrokeScorecard'
+import StrokeInput from './StrokeInput'
 
 const randomWords = require('random-words');
 const alphanumeric = /^[0-9a-zA-Z]+$/;
 export default {
-  name: 'Match',
+  name: 'Stroke',
   components: {
-    MatchInput,
-    MatchScorecard
+    StrokeInput,
+    StrokeScorecard
   },
   data: function () {
       return {
-        inputMatchID: '',
-        matchID: ''
+        inputStrokeID: '',
+        strokeID: ''
       }
   },
   methods: {
@@ -62,47 +62,47 @@ export default {
       return randomWords({exactly: 3, join: '', formatter: fmter});
     },
     errormsg: function() {
-      if (!this.inputMatchID.match(alphanumeric)){
+      if (!this.inputStrokeID.match(alphanumeric)){
         return 'Alpha-numeric Characters Only';
       }
-      if (this.inputMatchID.length < 15){
+      if (this.inputStrokeID.length < 15){
         return 'Not Long Enough';
       }
       return '';
     },
     validID: function () {
-      return (this.inputMatchID != this.matchID) && (this.errormsg == '')
+      return (this.inputStrokeID != this.strokeID) && (this.errormsg == '')
     },
     overlayURL: function() {
-      return window.location.origin + '/match/' + this.matchID;
+      return window.location.origin + '/stroke/' + this.strokeID;
     },
     resetdisabled: function() {
-      return this.inputMatchID == this.matchID;
+      return this.inputStrokeID == this.strokeID;
     },
     changedisabled: function() {
-      return (this.inputMatchID === this.matchID) || (this.errormsg() !== '');
+      return (this.inputStrokeID === this.strokeID) || (this.errormsg() !== '');
     },
     generateID: function() {
-      this.inputMatchID = this.randomID();
+      this.inputStrokeID = this.randomID();
     },
     resetID: function() {
-      this.inputMatchID = this.matchID;
+      this.inputStrokeID = this.strokeID;
     },
     changeID: function() {
-      this.matchID = this.inputMatchID;
-      localStorage.setItem('matchID', this.matchID);
+      this.strokeID = this.inputStrokeID;
+      localStorage.setItem('strokeID', this.strokeID);
     }
   },
   created() {
     document.body.style.backgroundColor = '#222222';
-    const getID = localStorage.getItem('matchID');
+    const getID = localStorage.getItem('strokeID');
     if (getID) {
-      this.matchID = getID;
+      this.strokeID = getID;
     } else {
-      this.matchID = this.randomID();
-      localStorage.setItem('matchID', this.matchID);
+      this.strokeID = this.randomID();
+      localStorage.setItem('strokeID', this.strokeID);
     }
-    this.inputMatchID = this.matchID;
+    this.inputStrokeID = this.strokeID;
   }
 }
 </script>
@@ -113,7 +113,7 @@ export default {
   user-select: none;
   transform: scale(1);
   width: 575px;
-  height: 420px;
+  height: 495px;
   margin-right: auto;
   margin-left: auto;
   border: 5px solid black;
@@ -121,12 +121,12 @@ export default {
 }
 .scorecard {
   width: 575px;
-  height: 420px;
+  height: 495px;
   background-color: #0b3811;
   z-index: -10;
   position: relative;
 }
-.matchid{
+.strokeid{
   margin-top: 16px;
   position: relative;
   margin-right: auto;
@@ -177,7 +177,8 @@ button:focus {
   outline: none;
 }
 button:disabled {
-  opacity: 30%;
+  filter: blur(1px);
+  opacity: 70%;
 }
 button:hover:disabled {
   border: solid 1px #444;
