@@ -19,7 +19,7 @@
         </span>
 
         <span id="p2Wrapper" class="wrappers">
-            <template v-if="p2Country != '' && p2Char != 'e.png'" >
+            <template v-if="p2Country && p2Char != 'e.png'" >
               <img class="flag" :src="'https://www.countryflags.io/' + p2Country + '/shiny/64.png'">
             </template>
             <img id="p2Portrait" :src="require(`../../assets/${p2Char}`)" class="portrait" />
