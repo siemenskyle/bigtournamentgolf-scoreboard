@@ -293,7 +293,7 @@ export default {
 .flag {
     position: inherit;
     top: -11px;
-    opacity: 75%;
+    opacity: 0.75;
     left: 34px;
 }
 

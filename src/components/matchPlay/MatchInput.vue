@@ -504,7 +504,6 @@ button:focus {
 </style>
 
 <style>
-
 .p-dropdown-clear-icon {
   right: 0.375em !important;
 }
@@ -513,6 +512,9 @@ button:focus {
 }
 .p-autocomplete {
   width: 100%;
+  margin-bottom: 10px;
+}
+.p-autocomplete-dropdown {
   margin-bottom: 10px;
 }
 .name {

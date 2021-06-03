@@ -317,10 +317,12 @@ button {
 }
 button:disabled {
   filter: blur(1px);
-  opacity: 70%;
+  border: solid 1px #333;
+  background-color: #222;
+  color: #aaa;
 }
 button:hover:disabled {
-  border: solid 1px #444;
+  border: solid 1px #333;
 }
 button:hover {
   border: solid 1px #888;
