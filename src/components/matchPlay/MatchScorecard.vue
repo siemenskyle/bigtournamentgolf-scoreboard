@@ -4,8 +4,9 @@
         <!-- Player Cards and Up Indicators -->
         <span id="p1Wrapper" class="wrappers">
             <template v-if="p1Country != '' && p1Char != 'e.png'" >
-              <country-flag :country="p1Country" class="flag stretch" />
-              <country-flag :country="p1Country" class="flag" />
+              <!--country-flag :country="p1Country" class="flag stretch" />
+              <country-flag :country="p1Country" class="flag" /-->
+              <img v-if="p1Country" class="flag" :src="'https://www.countryflags.io/' + p1Country + '/shiny/64.png'">
             </template>
             <img id="p1Portrait" :src="require(`../../assets/${p1Char}`)" class="portrait" />
             <span id="p1Name" class="names" v-bind:style="{ fontSize: nameSize(p1Name) }">{{ p1Name }}</span>
@@ -19,8 +20,7 @@
 
         <span id="p2Wrapper" class="wrappers">
             <template v-if="p2Country != '' && p2Char != 'e.png'" >
-              <country-flag :country="p2Country" class="flag stretch" />
-              <country-flag :country="p2Country" class="flag" />
+              <img class="flag" :src="'https://www.countryflags.io/' + p2Country + '/shiny/64.png'">
             </template>
             <img id="p2Portrait" :src="require(`../../assets/${p2Char}`)" class="portrait" />
             <span id="p2Name" class="names" v-bind:style="{ fontSize: nameSize(p2Name) }">{{ p2Name }}</span>
@@ -73,14 +73,10 @@
 
 <script>
 import fb from "../../firebaseConfig";
-import CountryFlag from 'vue-country-flag-next';
 
 var watchedRef;
 export default {
   name: 'MatchScorecard',
-  components: {
-    CountryFlag,
-  },
   props: {
     matchID: String
   },
@@ -289,20 +285,16 @@ export default {
 .portrait {
     float: left;
     margin-top: -10px;
-    margin-left: 2px;
+    margin-left: -4px;
     filter: drop-shadow(2px 4px 6px black);
     z-index: 5;
 }
 
 .flag {
     position: inherit;
-    top: 11px;
-    transform: scale(1);
-    opacity: 80%;
+    top: -11px;
+    opacity: 75%;
     left: 34px;
-    border: 1px solid black;
-    border-right: 0;
-    border-left: 0;
 }
 
 .stretch {

@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import { createWebHistory, createRouter } from "vue-router";
 import App from './App.vue';
+import Home from './components/Home';
 import Match from './components/matchPlay/Match';
 import MatchView from './components/matchPlay/MatchView';
 import Stroke from './components/strokePlay/Stroke';
@@ -14,7 +15,7 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Match
+    component: Home
   },
   {
     path: "/match",
