@@ -4,6 +4,7 @@
         <button @click="$router.push('/match')">Match Play Scorecard</button>
         <button @click="$router.push('/stroke')">Stroke Play Scorecard</button>
         <button @click="discord()">NTM Tour Discord</button>
+        <button @click="mizuumiWiki()">NTM Mizuumi Wiki</button>
     </div>
 </template>
 
@@ -13,6 +14,9 @@ export default {
   methods: {
     discord: function(){
         window.open('http://discord.bigtournament.golf', '_blank');
+    },
+    mizuumiWiki: function(){
+        window.open('https://wiki.gbl.gg/w/Neo_Turf_Masters', '_blank');
     }
   },
   created() {

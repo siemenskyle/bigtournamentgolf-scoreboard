@@ -6,7 +6,7 @@
             <template v-if="p1Country != '' && p1Char != 'e.png'" >
               <!--country-flag :country="p1Country" class="flag stretch" />
               <country-flag :country="p1Country" class="flag" /-->
-              <img v-if="p1Country" class="flag" :src="'https://www.countryflags.io/' + p1Country + '/shiny/64.png'">
+              <img v-if="p1Country" class="flag" :src="'https://flagicons.lipis.dev/flags/4x3/' + p1Country.toLowerCase() + '.svg'">
             </template>
             <img id="p1Portrait" :src="require(`../../assets/${p1Char}`)" class="portrait" />
             <span id="p1Name" class="names" v-bind:style="{ fontSize: nameSize(p1Name) }">{{ p1Name }}</span>
@@ -20,7 +20,7 @@
 
         <span id="p2Wrapper" class="wrappers">
             <template v-if="p2Country && p2Char != 'e.png'" >
-              <img class="flag" :src="'https://www.countryflags.io/' + p2Country + '/shiny/64.png'">
+              <img class="flag" :src="'https://flagicons.lipis.dev/flags/4x3/' + p2Country.toLowerCase() + '.svg'">
             </template>
             <img id="p2Portrait" :src="require(`../../assets/${p2Char}`)" class="portrait" />
             <span id="p2Name" class="names" v-bind:style="{ fontSize: nameSize(p2Name) }">{{ p2Name }}</span>
@@ -292,9 +292,10 @@ export default {
 
 .flag {
     position: inherit;
-    top: -11px;
+    top: 1px;
     opacity: 0.75;
-    left: 34px;
+    left: 27px;
+    height: 39px;
 }
 
 .stretch {
